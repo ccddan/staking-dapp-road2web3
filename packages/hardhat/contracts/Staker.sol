@@ -67,7 +67,10 @@ contract Staker {
                 rewardRatePerBlock);
         balances[msg.sender] = 0;
 
-        (bool sent, bytes memory data) = msg.sender.call{value: rewards}("");
+        (
+            bool sent, /*bytes memory data*/
+
+        ) = msg.sender.call{value: rewards}("");
         require(sent, "Withdrawal failed, try again");
     }
 
