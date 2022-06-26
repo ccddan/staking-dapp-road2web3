@@ -136,8 +136,9 @@ contract Staker {
     /*
   Time to "kill-time" on our local testnet
   */
-    function killTime() public {
-        currentBlock = block.timestamp;
+    function resetTime() public {
+        withdrawalDeadline = block.timestamp + 120 seconds;
+        claimDeadline = block.timestamp + 240 seconds;
     }
 
     /*
