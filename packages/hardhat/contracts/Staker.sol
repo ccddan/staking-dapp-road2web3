@@ -104,7 +104,7 @@ contract Staker {
   */
     function execute() public claimDeadlineReached(true) notCompleted {
         uint256 contractBalance = address(this).balance;
-        exampleExternalContract.complete{value: address(this).balance}();
+        exampleExternalContract.complete{value: address(this).balance}(true);
     }
 
     /*
