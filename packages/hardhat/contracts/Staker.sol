@@ -22,8 +22,8 @@ contract Staker {
 
     // Modifiers
     /*
-  Checks if the withdrawal period been reached or not
-  */
+     * Checks if the withdrawal period been reached or not
+     */
     modifier withdrawalDeadlineReached(bool requireReached) {
         uint256 timeRemaining = withdrawalTimeLeft();
         if (requireReached) {
@@ -35,8 +35,8 @@ contract Staker {
     }
 
     /*
-  Checks if the claim period has ended or not
-  */
+     * Checks if the claim period has ended or not
+     */
     modifier claimDeadlineReached(bool requireReached) {
         uint256 timeRemaining = claimPeriodLeft();
         if (requireReached) {
@@ -48,8 +48,8 @@ contract Staker {
     }
 
     /*
-  Requires that contract only be completed once!
-  */
+     * Requires that contract only be completed once!
+     */
     modifier notCompleted() {
         bool completed = exampleExternalContract.completed();
         require(!completed, "Stake already completed!");
@@ -76,9 +76,9 @@ contract Staker {
     }
 
     /*
-  Withdraw function for a user to remove their staked ETH inclusive
-  of both principle and any accured interest
-  */
+     * Withdraw function for a user to remove their staked ETH inclusive
+     * of both principle and any accured interest
+     */
     function withdraw()
         public
         withdrawalDeadlineReached(true)
@@ -105,16 +105,16 @@ contract Staker {
     }
 
     /*
-  Allows any user to repatriate "unproductive" funds that are left in the staking contract
-  past the defined withdrawal period
-  */
+     * Allows any user to repatriate "unproductive" funds that are left in the staking contract
+     * past the defined withdrawal period
+     */
     function execute() public claimDeadlineReached(true) notCompleted {
         exampleExternalContract.complete{value: address(this).balance}(true);
     }
 
     /*
-  READ-ONLY function to calculate time remaining before the minimum staking period has passed
-  */
+     * READ-ONLY function to calculate time remaining before the minimum staking period has passed
+     */
     function withdrawalTimeLeft()
         public
         view
@@ -130,8 +130,8 @@ contract Staker {
     }
 
     /*
-  READ-ONLY function to calculate time remaining before the minimum staking period has passed
-  */
+     * READ-ONLY function to calculate time remaining before the minimum staking period has passed
+     */
     function claimPeriodLeft()
         public
         view
@@ -147,17 +147,17 @@ contract Staker {
     }
 
     /*
-  Time to "kill-time" on our local testnet
-  */
+     * Time to "kill-time" on our local testnet
+     */
     function resetTime() public {
         withdrawalDeadline = block.timestamp + 120 seconds;
         claimDeadline = block.timestamp + 240 seconds;
     }
 
     /*
-  \Function for our smart contract to receive ETH
-  cc: https://docs.soliditylang.org/en/latest/contracts.html#receive-ether-function
-  */
+     * Function for our smart contract to receive ETH
+     * cc: https://docs.soliditylang.org/en/latest/contracts.html#receive-ether-function
+     */
     receive() external payable {
         emit Received(msg.sender, msg.value);
     }
