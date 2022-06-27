@@ -563,7 +563,7 @@ function App(props) {
                   tx(writeContracts.Staker.execute());
                 }}
               >
-                📡 Execute!
+                📡 Finalize Staker!
               </Button>
             </div>
 
