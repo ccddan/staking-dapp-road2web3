@@ -88,6 +88,10 @@ contract Staker {
         uint256 indBalanceRewards = individualBalance +
             ((block.timestamp - depositTimestamps[msg.sender]) *
                 rewardRatePerBlock);
+        require(
+            address(this).balance > (indBalanceRewards + rewardRatePerBlock),
+            "Not enough balance for rewards"
+        );
         balances[msg.sender] = 0;
 
         // Transfer all ETH via call! (not transfer) cc: https://solidity-by-example.org/sending-ether
