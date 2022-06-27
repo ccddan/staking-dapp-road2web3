@@ -174,6 +174,7 @@ function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
+  const [stakeAmount, setStakeAmount] = useState("0.5");
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
@@ -276,13 +277,11 @@ function App(props) {
   const stakeEvents = useEventListener(readContracts, "Staker", "Stake", localProvider, 1);
   console.log("📟 stake events:", stakeEvents);
 
-  // ** keep track of a variable from the contract in the local React state:
-  const timeLeft = useContractReader(readContracts, "Staker", "timeLeft");
-  console.log("⏳ timeLeft:", timeLeft);
-
   // ** Listen for when the contract has been 'completed'
   const complete = useContractReader(readContracts, "ExampleExternalContract", "completed");
   console.log("✅ complete:", complete);
+
+
 
   const exampleExternalContractBalance = useBalance(
     localProvider,
@@ -557,11 +556,6 @@ function App(props) {
 
             <Divider />
 
-            <div style={{ padding: 8, marginTop: 32 }}>
-              <div>Timeleft:</div>
-              {timeLeft && humanizeDuration(timeLeft.toNumber() * 1000)}
-            </div>
-
             <div style={{ padding: 8 }}>
               <Button
                 type={"default"}
@@ -584,14 +578,23 @@ function App(props) {
               </Button>
             </div>
 
-            <div style={{ padding: 8 }}>
+            <div style={{ padding: 8, display: "inline-grid" }}>
+              <input
+                type="number"
+                name="stakeAmount"
+                id="stakeAmount"
+                min="0.1"
+                step="0.1"
+                defaultValue={parseFloat(stakeAmount)}
+                onChange={(e) => setStakeAmount(e.target.value.trim())}
+                style={{marginBottom: 5, color: "black", textAlign: "center"}} />
               <Button
                 type={balanceStaked ? "success" : "primary"}
                 onClick={() => {
-                  tx(writeContracts.Staker.stake({ value: ethers.utils.parseEther("0.5") }));
+                  tx(writeContracts.Staker.stake({ value: ethers.utils.parseEther(stakeAmount) }));
                 }}
               >
-                🥩 Stake 0.5 ether!
+                🥩 Stake {stakeAmount} ether!
               </Button>
             </div>
 
