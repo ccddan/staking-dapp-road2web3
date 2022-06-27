@@ -6,6 +6,7 @@ import "./ExampleExternalContract.sol";
 
 contract Staker {
     ExampleExternalContract public exampleExternalContract;
+    address public owner;
 
     mapping(address => uint256) public balances;
     mapping(address => uint256) public depositTimestamps;
@@ -59,6 +60,7 @@ contract Staker {
         exampleExternalContract = ExampleExternalContract(
             exampleExternalContractAddress
         );
+        owner = msg.sender;
     }
 
     // Stake function for a user to stake ETH in our contract
