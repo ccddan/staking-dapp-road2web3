@@ -13,7 +13,6 @@ contract Staker {
     uint256 public constant rewardRatePerBlock = 0.1 ether;
     uint256 public withdrawalDeadline = block.timestamp + 120 seconds;
     uint256 public claimDeadline = block.timestamp + 240 seconds;
-    uint256 public currentBlock = 0;
 
     // Events
     event Stake(address indexed sender, uint256 amount);
@@ -92,9 +91,10 @@ contract Staker {
         balances[msg.sender] = 0;
 
         // Transfer all ETH via call! (not transfer) cc: https://solidity-by-example.org/sending-ether
-        (bool sent, bytes memory data) = msg.sender.call{
-            value: indBalanceRewards
-        }("");
+        (
+            bool sent, /* bytes memory data */
+
+        ) = msg.sender.call{value: indBalanceRewards}("");
         require(sent, "RIP; withdrawal failed :( ");
     }
 
@@ -103,7 +103,6 @@ contract Staker {
   past the defined withdrawal period
   */
     function execute() public claimDeadlineReached(true) notCompleted {
-        uint256 contractBalance = address(this).balance;
         exampleExternalContract.complete{value: address(this).balance}(true);
     }
 
@@ -113,7 +112,9 @@ contract Staker {
     function withdrawalTimeLeft()
         public
         view
-        returns (uint256 withdrawalTimeLeft)
+        returns (
+            uint256 /* withdrawalTimeLeft */
+        )
     {
         if (block.timestamp >= withdrawalDeadline) {
             return (0);
@@ -125,7 +126,13 @@ contract Staker {
     /*
   READ-ONLY function to calculate time remaining before the minimum staking period has passed
   */
-    function claimPeriodLeft() public view returns (uint256 claimPeriodLeft) {
+    function claimPeriodLeft()
+        public
+        view
+        returns (
+            uint256 /* claimPeriodLeft */
+        )
+    {
         if (block.timestamp >= claimDeadline) {
             return (0);
         } else {
