@@ -11,7 +11,7 @@ contract Staker {
     mapping(address => uint256) public balances;
     mapping(address => uint256) public depositTimestamps;
 
-    uint256 public constant rewardRatePerBlock = 0.1 ether;
+    uint256 public constant rewardRatePerBlock = 0.001 ether;
     uint256 public withdrawalDeadline = block.timestamp + 120 seconds;
     uint256 public claimDeadline = block.timestamp + 240 seconds;
 
@@ -77,7 +77,7 @@ contract Staker {
 
     /*
      * Withdraw function for a user to remove their staked ETH inclusive
-     * of both principle and any accured interest
+     * of both principle and any accrued interest
      */
     function withdraw()
         public
@@ -86,12 +86,18 @@ contract Staker {
         notCompleted
     {
         require(balances[msg.sender] > 0, "You have no balance to withdraw!");
-        uint256 individualBalance = balances[msg.sender];
-        uint256 indBalanceRewards = individualBalance +
-            ((block.timestamp - depositTimestamps[msg.sender]) *
-                rewardRatePerBlock);
+
+        uint256 stakedBalance = balances[msg.sender];
+        uint256 currentBlock = block.timestamp;
+        uint256 depositedBlock = depositTimestamps[msg.sender];
+        uint256 stakedBlocks = currentBlock - depositedBlock;
+
+        uint256 totalBalance = stakedBalance +
+            ((rewardRatePerBlock * (stakedBlocks / 1000)**2) +
+                (rewardRatePerBlock * (stakedBlocks / 1000)));
+
         require(
-            address(this).balance > (indBalanceRewards + rewardRatePerBlock),
+            address(this).balance > (totalBalance + rewardRatePerBlock),
             "Not enough balance for rewards"
         );
         balances[msg.sender] = 0;
@@ -100,7 +106,7 @@ contract Staker {
         (
             bool sent, /* bytes memory data */
 
-        ) = msg.sender.call{value: indBalanceRewards}("");
+        ) = msg.sender.call{value: totalBalance}("");
         require(sent, "RIP; withdrawal failed :( ");
     }
 
