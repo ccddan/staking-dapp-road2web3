@@ -1,4 +1,4 @@
-# 🏗 scaffold-eth | 🏰 BuidlGuidl
+# Basic Staking dApp - Road To Web3 by Alchemy - Week 6
 
 Install project dependencies with `yarn install`
 
